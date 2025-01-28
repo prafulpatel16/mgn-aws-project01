@@ -1,0 +1,308 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Target Environment Resources
+Parameters:
+  KeyName:
+    Description: Name of the EC2 KeyPair to enable SSH access to the instances
+    Type: String
+    Default: target-obbs-key
+  TargetVPCName:
+    Description: The name of the Target VPC being created.
+    Type: String
+    Default: TargetObbsVPC
+
+Mappings:
+  SubnetConfig:
+    TargetVPC:
+      CIDR: 192.168.0.0/16
+    Public0:
+      CIDR: 192.168.0.0/24
+    Public1:
+      CIDR: 192.168.1.0/24
+    Private00:
+      CIDR: 192.168.100.0/24
+    Private10:
+      CIDR: 192.168.200.0/24
+    Private01:
+      CIDR: 192.168.101.0/24
+    Private11:
+      CIDR: 192.168.201.0/24
+  AZRegions:
+    us-west-2:
+      AZs:
+      - a
+      - b
+
+Resources:
+  TargetVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      CidrBlock: !FindInMap [SubnetConfig, TargetVPC, CIDR]
+      Tags:
+        - Key: Name
+          Value: !Ref TargetVPCName
+
+  PublicSubnet0:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TargetVPC
+      AvailabilityZone: !Sub '${AWS::Region}a'
+      CidrBlock: !FindInMap [SubnetConfig, Public0, CIDR]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Network
+          Value: Public
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-public-a'
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TargetVPC
+      AvailabilityZone: !Sub '${AWS::Region}b'
+      CidrBlock: !FindInMap [SubnetConfig, Public1, CIDR]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Network
+          Value: Public
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-public-b'
+
+  PrivateSubnet00:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TargetVPC
+      AvailabilityZone: !Sub '${AWS::Region}a'
+      CidrBlock: !FindInMap [SubnetConfig, Private00, CIDR]
+      Tags:
+        - Key: Network
+          Value: Private
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-private-a-web'
+
+  PrivateSubnet01:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TargetVPC
+      AvailabilityZone: !Sub '${AWS::Region}a'
+      CidrBlock: !FindInMap [SubnetConfig, Private01, CIDR]
+      Tags:
+        - Key: Network
+          Value: Private
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-private-a-db'
+
+  PrivateSubnet10:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TargetVPC
+      AvailabilityZone: !Sub '${AWS::Region}b'
+      CidrBlock: !FindInMap [SubnetConfig, Private10, CIDR]
+      Tags:
+        - Key: Network
+          Value: Private
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-private-b-web'
+
+  PrivateSubnet11:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TargetVPC
+      AvailabilityZone: !Sub '${AWS::Region}b'
+      CidrBlock: !FindInMap [SubnetConfig, Private11, CIDR]
+      Tags:
+        - Key: Network
+          Value: Private
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-private-b-db'
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-IGW'
+
+  GatewayToInternet:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref TargetVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref TargetVPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-public-route-table'
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayToInternet
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssociation0:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet0
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  ElasticIP0:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-nat-gateway-eip-0'
+
+  ElasticIP1:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-nat-gateway-eip-1'
+
+  NATGateway0:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt ElasticIP0.AllocationId
+      SubnetId: !Ref PublicSubnet0
+      Tags:
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-nat-gateway-0'
+
+  NATGateway1:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt ElasticIP1.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-nat-gateway-1'
+
+  PrivateRouteTable0:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref TargetVPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-private-route-table-0'
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref TargetVPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${TargetVPCName}-private-route-table-1'
+
+  PrivateRouteToInternet0:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable0
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway0
+
+  PrivateRouteToInternet1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway1
+
+  PrivateSubnetRouteTableAssociation00:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet00
+      RouteTableId: !Ref PrivateRouteTable0
+
+  PrivateSubnetRouteTableAssociation01:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet01
+      RouteTableId: !Ref PrivateRouteTable0
+
+  PrivateSubnetRouteTableAssociation10:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet10
+      RouteTableId: !Ref PrivateRouteTable1
+
+  PrivateSubnetRouteTableAssociation11:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet11
+      RouteTableId: !Ref PrivateRouteTable1
+
+Outputs:
+  VPCId:
+    Description: VPC ID for the Target Environment
+    Value: !Ref TargetVPC
+
+  PublicSubnet0Id:
+    Description: Public Subnet 0 ID
+    Value: !Ref PublicSubnet0
+
+  PublicSubnet1Id:
+    Description: Public Subnet 1 ID
+    Value: !Ref PublicSubnet1
+
+  PrivateSubnet00Id:
+    Description: Private Subnet 0-0 ID
+    Value: !Ref PrivateSubnet00
+
+  PrivateSubnet01Id:
+    Description: Private Subnet 0-1 ID
+    Value: !Ref PrivateSubnet01
+
+  PrivateSubnet10Id:
+    Description: Private Subnet 1-0 ID
+    Value: !Ref PrivateSubnet10
+
+  PrivateSubnet11Id:
+    Description: Private Subnet 1-1 ID
+    Value: !Ref PrivateSubnet11
+
+  InternetGatewayId:
+    Description: Internet Gateway ID
+    Value: !Ref InternetGateway
+
+  NATGateway0Id:
+    Description: NAT Gateway 0 ID
+    Value: !Ref NATGateway0
+
+  NATGateway1Id:
+    Description: NAT Gateway 1 ID
+    Value: !Ref NATGateway1
+
+  ElasticIP0:
+    Description: Elastic IP Address 0
+    Value: !Ref ElasticIP0
+
+  ElasticIP1:
+    Description: Elastic IP Address 1
+    Value: !Ref ElasticIP1
+
+  PublicRouteTableId:
+    Description: Public Route Table ID
+    Value: !Ref PublicRouteTable
+
+  PrivateRouteTable0Id:
+    Description: Private Route Table 0 ID
+    Value: !Ref PrivateRouteTable0
+
+  PrivateRouteTable1Id:
+    Description: Private Route Table 1 ID
+    Value: !Ref PrivateRouteTable1
