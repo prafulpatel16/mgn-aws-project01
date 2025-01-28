@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Cloud Migration Project: On-Premise to AWS
 
 ## Overview
@@ -20,4 +18,3 @@ This project demonstrates the migration of an on-premises web application and da
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/mgn-aws-project01.git
->>>>>>> 1803044 (updated images)
