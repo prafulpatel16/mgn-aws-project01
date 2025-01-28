@@ -1,0 +1,397 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Online Banquet Booking System Infrastructure with NAT Gateway for Database Internet Access
+
+Parameters:
+  WebServerAMI:
+    Type: String
+    Default: ami-00c257e12d6828491
+    Description: Ubuntu 20.04 LTS AMI for the Web Server EC2 instance
+
+  DatabaseAMI:
+    Type: String
+    Default: ami-00c257e12d6828491
+    Description: Ubuntu 20.04 LTS AMI for the Database Server EC2 instance
+
+Resources:
+  # VPC
+  BanquetAppVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: BanquetAppVPC
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BanquetAppVPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: PublicSubnet
+
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BanquetAppVPC
+      CidrBlock: 10.0.2.0/24
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: PrivateSubnet
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: BanquetAppInternetGateway
+
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref BanquetAppVPC
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref BanquetAppVPC
+      Tags:
+        - Key: Name
+          Value: PublicRouteTable
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+  NATGatewayEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: NATGatewayEIP
+
+  NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      AllocationId: !GetAtt NATGatewayEIP.AllocationId
+      Tags:
+        - Key: Name
+          Value: BanquetAppNATGateway
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref BanquetAppVPC
+      Tags:
+        - Key: Name
+          Value: PrivateRouteTable
+
+  PrivateRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway
+
+  PrivateSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet
+      RouteTableId: !Ref PrivateRouteTable
+
+  # Security Groups
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the Web Server
+      VpcId: !Ref BanquetAppVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: WebServerSecurityGroup
+
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the Database Server
+      VpcId: !Ref BanquetAppVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref WebServerSecurityGroup
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DatabaseSecurityGroup
+
+  # IAM Role for EC2 DescribeInstances
+  EC2DescribeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: EC2DescribeInstancesPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: ec2:DescribeInstances
+                Resource: "*"
+      Tags:
+        - Key: Name
+          Value: EC2DescribeRole
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EC2DescribeRole
+
+  # IAM Role for SSM Session Manager
+  SSMInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Tags:
+        - Key: Name
+          Value: SSMInstanceRole
+
+  SSMInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref SSMInstanceRole
+
+  # Web Server Instance
+  WebServerInstance:
+    Type: AWS::EC2::Instance
+    DependsOn: DatabaseInstance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: !Ref WebServerAMI
+      KeyName: banquet-key-pai
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref WebServerSecurityGroup
+      IamInstanceProfile: !Ref InstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+
+          # Redirect all output (stdout and stderr) to a log file
+          exec > >(sudo tee /var/log/userdata.log) 2>&1
+
+          set -e  # Exit immediately if a command fails
+
+          # Update system packages
+          echo "Updating system packages..."
+          sudo apt-get update -y
+          sudo apt-get upgrade -y
+
+          # Install Apache, PHP, and other required packages
+          echo "Installing Apache and required packages..."
+          sudo apt-get install -y apache2 php libapache2-mod-php php-mysql wget unzip git
+
+          # Install AWS CLI via official method
+          echo "Installing AWS CLI..."
+          sudo apt-get install -y unzip
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+          # Start and enable Apache
+          echo "Starting and enabling Apache..."
+          sudo systemctl start apache2
+          sudo systemctl enable apache2
+
+          # Clone the application repository
+          echo "Cloning application repository..."
+          sudo mkdir -p /var/www/html/
+          sudo chown -R $USER:$USER /var/www/html/
+          cd /var/www/html/
+          sudo rm -rf *  # Clear the directory before cloning
+          sudo git clone https://github.com/prafulpatel16/Online-Banquet-BooKing-System-Using-PHP.git
+          sudo cp -r Online-Banquet-BooKing-System-Using-PHP/obbs/* /var/www/html/
+
+          # Set permissions for web files
+          echo "Setting permissions for web files..."
+          sudo chown -R www-data:www-data /var/www/html/
+          sudo chmod -R 755 /var/www/html/
+
+          # Fetch database instance private IP
+          echo "Fetching database instance private IP..."
+          DB_INSTANCE_TAG="DatabaseInstance"
+          DB_HOST=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=$DB_INSTANCE_TAG" \
+              --query "Reservations[*].Instances[*].PrivateIpAddress" \
+              --output text 2>/dev/null)
+
+          if [[ -z "$DB_HOST" ]]; then
+            echo "ERROR: Failed to fetch DB_HOST. Exiting..."
+            exit 1
+          else
+            echo "Database server IP resolved to: $DB_HOST"
+          fi
+
+          # Define database credentials
+          DB_USER="obbsadmin"
+          DB_PASS="admin123456"
+          DB_NAME="obbs"
+
+          # Configure database connection
+          echo "Configuring database connection..."
+          DB_INFO_FILE="/var/www/html/includes/dbinfo.inc"
+          DB_CONNECTION_FILE="/var/www/html/includes/dbconnection.php"
+
+          if [[ -f "$DB_INFO_FILE" ]]; then
+            sudo sed -i "s/'localhost'/'$DB_HOST'/" "$DB_INFO_FILE"
+            sudo sed -i "s/'root'/'$DB_USER'/" "$DB_INFO_FILE"
+            sudo sed -i "s/''/'$DB_PASS'/" "$DB_INFO_FILE"
+            sudo sed -i "s/'obbs'/'$DB_NAME'/" "$DB_INFO_FILE"
+            echo "Updated $DB_INFO_FILE successfully."
+          else
+            echo "ERROR: $DB_INFO_FILE not found. Exiting..."
+            exit 1
+          fi
+
+          if [[ -f "$DB_CONNECTION_FILE" ]]; then
+            sudo sed -i "s/'{{DB_HOST}}'/'$DB_HOST'/" "$DB_CONNECTION_FILE"
+            sudo sed -i "s/'{{DB_USER}}'/'$DB_USER'/" "$DB_CONNECTION_FILE"
+            sudo sed -i "s/'{{DB_PASS}}'/'$DB_PASS'/" "$DB_CONNECTION_FILE"
+            sudo sed -i "s/'{{DB_NAME}}'/'$DB_NAME'/" "$DB_CONNECTION_FILE"
+            echo "Updated $DB_CONNECTION_FILE successfully."
+          else
+            echo "ERROR: $DB_CONNECTION_FILE not found. Exiting..."
+            exit 1
+          fi
+
+          # Restart Apache
+          echo "Restarting Apache..."
+          sudo systemctl restart apache2
+
+          # Success message
+          echo "Web server setup completed successfully!"
+
+      Tags:
+        - Key: Name
+          Value: WebServerInstance
+
+  # Database Server Instance
+  DatabaseInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: !Ref DatabaseAMI
+      KeyName: banquet-key-pai
+      SubnetId: !Ref PrivateSubnet
+      SecurityGroupIds:
+        - !Ref DatabaseSecurityGroup
+      IamInstanceProfile: !Ref SSMInstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+
+          # Redirect all output (stdout and stderr) to a log file
+          exec > >(tee /var/log/userdata.log) 2>&1
+          set -e  # Exit immediately if a command fails
+
+          echo "Updating system packages..."
+          sudo apt-get update -y && sudo apt-get upgrade -y
+
+          echo "Installing MariaDB..."
+          sudo apt-get install -y mariadb-server wget
+
+          echo "Starting and enabling MariaDB service..."
+          sudo systemctl start mariadb
+          sudo systemctl enable mariadb
+
+          echo "Configuring MariaDB root user..."
+          sudo mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('AWSRocksSince2006');"
+
+          echo "Securing MariaDB installation..."
+          sudo mysql -u root -p"AWSRocksSince2006" <<-EOSQL
+          DELETE FROM mysql.user WHERE User='';
+          DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+          DROP DATABASE IF EXISTS test;
+          DELETE FROM mysql.db WHERE Db='test' OR Db='test_%';
+          FLUSH PRIVILEGES;
+
+          CREATE DATABASE obbs;
+          CREATE USER 'obbsadmin'@'%' IDENTIFIED BY 'admin123456';
+          GRANT ALL PRIVILEGES ON obbs.* TO 'obbsadmin'@'%';
+          FLUSH PRIVILEGES;
+          EOSQL
+
+          echo "Configuring MariaDB to listen on all interfaces..."
+          sudo sed -i "s/^bind-address\s*=.*/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf
+
+          echo "Restarting MariaDB service to apply binding changes..."
+          sudo systemctl restart mariadb
+
+          echo "Downloading and importing SQL dump..."
+          wget -O /tmp/obbs.sql "https://raw.githubusercontent.com/prafulpatel16/Online-Banquet-BooKing-System-Using-PHP/master/SQL%20File/obbs.sql" || { echo "Failed to download SQL dump. Exiting."; exit 1; }
+          sudo mysql -u root -p"AWSRocksSince2006" obbs < /tmp/obbs.sql || { echo "Failed to import SQL dump. Exiting."; exit 1; }
+
+          echo "Cleaning up temporary files..."
+          rm -f /tmp/obbs.sql
+
+          echo "MariaDB setup and database import completed successfully!"
+
+
+      Tags:
+        - Key: Name
+          Value: DatabaseInstance
+
+Outputs:
+  WebServerPublicIP:
+    Description: Public IP address of the web server
+    Value: !GetAtt WebServerInstance.PublicIp
+
+  WebServerURL:
+    Description: URL to access the web application
+    Value: !Sub "http://${WebServerInstance.PublicIp}/"
