@@ -1,5 +1,9 @@
 # Cloud Migration Project: On-Premise to AWS
 
+![alt text](<diagrams/AWS Migration-Part-1- Thumbnail 1200 X 644.gif>)
+
+## Webapplication
+![alt text](migration/images/web01.png)
 ## Overview
 This project demonstrates the migration of an on-premises web application and database to AWS using AWS DMS, Client VPN, and RDS.
 
