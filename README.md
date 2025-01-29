@@ -7,7 +7,8 @@ This project demonstrates the migration of an **on-premises web application** an
 
 ---
 ## Architecture
-![alt text](<diagrams/AWS Migration-Part-1- Thumbnail 1200 X 644.gif>)
+![alt text](<diagrams/AWS Blogs-ApplicationDiscovery-Services1200 X 644.gif>)
+
 
 ## 🏗️ Project Architecture
 
