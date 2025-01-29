@@ -155,7 +155,7 @@ Cloud migration is no longer a question of *if* but *when and how*. Organization
 📍 **Follow Detailed Documentation on GitHub**:  
 🔗 **📌 Discovery Service Deployment:**  [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/1.Deploy.md)  
 
-🔗 **📌 High-Level TCO Analysis:**  [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/2.HighLevel-TCO-Analysis.md)  
+🔗 **📌 High-Level TCO Analysis:**  [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/2.HighLevel-TCO-Analysis.md)
 
 🔗 **📌 Complete AWS Migration Docs:**  [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)  
 
