@@ -13,9 +13,11 @@ This project demonstrates the migration of an **on-premises web application** an
 ## 📑 Project Index & Key Documents
 
 🔹 **[Phase 1: AWS Application Discovery & TCO Analysis](#aws-cloud-migration---phase-1-application-discovery--tco-analysis)**
-   - 📄 **[Discovery Service Deployment](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Discover/1.Deploy.md)**
-   - 📄 **[High-Level TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Discover/2.HighLevel-TCO%20Analysis.md)**
-   - 📄 **[Complete AWS Migration Documentation](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)**
+   - 📄 **[Discovery Service Deployment](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/1.Deploy.md)**
+   - 📄 **[High-Level TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/2.HighLevel-TCO-Analysis.md)**
+   - 📄 **[Complete AWS Migration Documentation](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)** 
+
+
 
 
 ## 🏗️ Project Architecture
@@ -33,6 +35,8 @@ This project demonstrates the migration of an **on-premises web application** an
 - **Database**: MySQL.
 
 ### **AWS Environment**
+- **AWS ADS**: Captures existing VMs data from on-premises VMs to AWS Migration Hub.
+    - Collects Data: Technical Information , Performance Information, Network information
 - **AWS DMS**: Migrates data from on-premises MySQL to AWS RDS MySQL.
 - **AWS RDS**: Managed MySQL database service.
 - **AWS Client VPN**: Provides secure connectivity between on-premises and AWS.
@@ -42,6 +46,9 @@ This project demonstrates the migration of an **on-premises web application** an
 
 ---
 ## 🎯 Key Components
+
+### 🗄️ **AWS ADS**
+- Ensures a seamless information and Data collecting from on-premises VMs to **AWS Migration Hub** **Data Collector**, **Servers**.
 
 ### 🗄️ **AWS DMS**
 - Ensures a seamless database migration from on-premises MySQL to AWS RDS with options for **full-load** and **CDC (Change Data Capture)**.
@@ -76,6 +83,7 @@ This project demonstrates the migration of an **on-premises web application** an
 
 ### **1️⃣ Pre-Migration**
 - 🔍 **Assess Current Architecture**: Analyze the on-premises architecture and workloads, identifying dependencies and compatibility for migration.
+- 🛠️ **Install and Configure AWS ADS Agents**: Deploy AWS Discvoery Agents (ADS) agents on source systems to capture data for migration.
 - 🛠️ **Install and Configure AWS DMS Agents**: Deploy AWS Database Migration Service (DMS) agents on source systems to capture data for migration.
 - 🏗️ **Set Up AWS Infrastructure**:
   - Create and configure **VPC** with public and private subnets.
@@ -146,9 +154,11 @@ Cloud migration is no longer a question of *if* but *when and how*. Organization
    - Implement **CloudWatch & Security Best Practices**.  
 
 📍 **Follow Detailed Documentation on GitHub**:  
-🔗 **📌 Discovery Service Deployment:** [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Discover/1.Deploy.md)  
-🔗 **📌 High-Level TCO Analysis:** [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Discover/2.HighLevel-TCO%20Analysis.md)  
-🔗 **📌 Complete AWS Migration Docs:** [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)  
+🔗 **📌 Discovery Service Deployment:**  [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/1.Deploy.md)  
+
+🔗 **📌 High-Level TCO Analysis:**  [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/2.HighLevel-TCO-Analysis.md)  
+
+🔗 **📌 Complete AWS Migration Docs:**  [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)  
 
 💡 **Stay Updated with Tech Content:** [📌 Praful’s Blog](https://www.praful.cloud)  
 
