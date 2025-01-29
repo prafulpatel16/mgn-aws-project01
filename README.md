@@ -12,7 +12,7 @@ This project demonstrates the migration of an **on-premises web application** an
 
 ## 📑 Project Index & Key Documents
 
-🔹 **[Phase 1: AWS Application Discovery & TCO Analysis](#aws-cloud-migration---phase-1-application-discovery--tco-analysis)**
+🔹 **[Phase 1: AWS Application Discovery & TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis)**
    - 📄 **[Discovery Service Deployment](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/1.Deploy.md)**
    - 📄 **[High-Level TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/2.HighLevel-TCO-Analysis.md)**
    - 📄 **[Complete AWS Migration Documentation](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)** 
@@ -48,7 +48,7 @@ This project demonstrates the migration of an **on-premises web application** an
 ## 🎯 Key Components
 
 ### 🗄️ **AWS ADS**
-- Ensures a seamless information and Data collecting from on-premises VMs to **AWS Migration Hub** **Data Collector**, **Servers**.
+- Ensures a seamless information and Data collecting from on-premises VMs to **AWS Migration Hub**,**Data Collector**, **Servers**.
 
 ### 🗄️ **AWS DMS**
 - Ensures a seamless database migration from on-premises MySQL to AWS RDS with options for **full-load** and **CDC (Change Data Capture)**.
