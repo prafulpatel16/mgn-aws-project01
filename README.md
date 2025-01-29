@@ -10,6 +10,14 @@ This project demonstrates the migration of an **on-premises web application** an
 ![alt text](<diagrams/AWS Blogs-ApplicationDiscovery-Services1200 X 644.gif>)
 
 
+## 📑 Project Index & Key Documents
+
+🔹 **[Phase 1: AWS Application Discovery & TCO Analysis](#aws-cloud-migration---phase-1-application-discovery--tco-analysis)**
+   - 📄 **[Discovery Service Deployment](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Discover/1.Deploy.md)**
+   - 📄 **[High-Level TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Discover/2.HighLevel-TCO%20Analysis.md)**
+   - 📄 **[Complete AWS Migration Documentation](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)**
+
+
 ## 🏗️ Project Architecture
 
 ### 🔹 **On-Premises Setup**
@@ -108,6 +116,44 @@ This project demonstrates the migration of an **on-premises web application** an
   - Review **DMS migration logs** and CloudWatch metrics for any errors, discrepancies, or missed data during migration.
 
 ---
+
+### 🚀 **AWS Cloud Migration - Phase 1: Application Discovery & TCO Analysis**  
+
+Cloud migration is no longer a question of *if* but *when and how*. Organizations are rapidly moving from **on-premises** to **AWS Cloud** to enhance **scalability, security, and cost efficiency**. But **how do you ensure a seamless migration?**  
+
+👉 **Phase 1 starts with AWS Application Discovery Service (ADS)**, helping you assess **current infrastructure, dependencies, and costs** before making the move.  
+
+🔹 **Why Migrate?**  
+✅ Reduce **operational costs** (TCO)  
+✅ Enhance **scalability & performance**  
+✅ Strengthen **security & compliance**  
+✅ Enable **automation & innovation**  
+
+🔹 **How to Migrate?**  
+1️⃣ **Discovery & Assessment** 📊  
+   - Use **AWS Migration Hub & ADS** to analyze workloads.  
+   - Deploy **Discovery Agents** to gather system metrics.  
+   - Conduct **Migration Readiness Assessment (MRA)** to evaluate business & tech alignment.  
+
+2️⃣ **Planning with TCO & RACI** 🛠️  
+   - Perform **High-Level TCO Analysis** for cost estimation.  
+   - Define **roles & responsibilities** using **RACI Matrix**.  
+   - Optimize resources for **right-sized AWS migration**.  
+
+3️⃣ **Migration Execution** 🔄  
+   - Migrate databases using **AWS DMS**.  
+   - Use **AWS Client VPN & Direct Connect** for secure connectivity.  
+   - Implement **CloudWatch & Security Best Practices**.  
+
+📍 **Follow Detailed Documentation on GitHub**:  
+🔗 **📌 Discovery Service Deployment:** [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Discover/1.Deploy.md)  
+🔗 **📌 High-Level TCO Analysis:** [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Discover/2.HighLevel-TCO%20Analysis.md)  
+🔗 **📌 Complete AWS Migration Docs:** [GitHub Link](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)  
+
+💡 **Stay Updated with Tech Content:** [📌 Praful’s Blog](https://www.praful.cloud)  
+
+🚀 **Migrate Smart, Optimize Costs, and Build Scalable Cloud Solutions!** 💡 #AWS #CloudMigration #ApplicationDiscovery #TCO #DevOps #AWSMigration #InfrastructureOptimization
+
 
 ## 📖 References
 
