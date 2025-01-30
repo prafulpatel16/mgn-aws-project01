@@ -324,6 +324,7 @@ Resources:
   # Database Server Instance
   DatabaseInstance:
     Type: AWS::EC2::Instance
+    DependsOn: NATGateway 
     Properties:
       InstanceType: t2.micro
       ImageId: !Ref DatabaseAMI

@@ -12,7 +12,12 @@ This project demonstrates the migration of an **on-premises web application** an
 
 ## 📑 Project Index & Key Documents
 
+ 
+
 🔹 **[Phase 1: AWS Application Discovery & TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis)**
+
+   - 🎥[Watch on YouTube](https://youtu.be/RsjnwFSk6LU)
+
    - 📄 **[Pre-Requisite](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/0.Pre-requisite.md)**
    - 📄 **[Discovery Service Deployment](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/1.Deploy.md)**
    - 📄 **[High-Level TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/2.HighLevel-TCO-Analysis.md)** 
