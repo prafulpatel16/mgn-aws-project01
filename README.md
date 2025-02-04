@@ -6,15 +6,14 @@
 This project demonstrates the migration of an **on-premises web application** and its associated **database** to AWS, leveraging services like **AWS DMS**, **Client VPN**, and **RDS**. The migration ensures secure connectivity, seamless data transfer, and improved scalability and availability in the cloud environment.
 
 ---
-## Architecture
-![alt text](<diagrams/AWS Blogs-ApplicationDiscovery-Services1200 X 644.gif>)
-
-
 ## 📑 Project Index & Key Documents
 
  
 
-🔹 **[Phase 1: AWS Application Discovery & TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis)**
+## 🔹[Phase 1: AWS Application Discovery & TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis)
+
+## Architecture
+![alt text](<diagrams/AWS Blogs-ApplicationDiscovery-Services1200 X 644.gif>)
 
    - 🎥[Watch on YouTube](https://youtu.be/RsjnwFSk6LU)
 
@@ -23,7 +22,10 @@ This project demonstrates the migration of an **on-premises web application** an
    - 📄 **[High-Level TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/2.HighLevel-TCO-Analysis.md)** 
    - 📄 **[Complete AWS Migration Documentation](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)** 
 
-🔹 **[Phase 2: AWS Database Migration](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/migration/B-Phase%202-AWS%20Database-migration)**
+## 🔹 [Phase 2: AWS Database Migration](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/migration/B-Phase%202-AWS%20Database-migration)
+
+## Architecture
+![alt text](<diagrams/AWS DMS Migration2- Thumbnail 1200 X 644.gif>)
 
    - 🎥[Watch on YouTube](https://youtu.be/RsjnwFSk6LU)
 
