@@ -23,7 +23,17 @@ This project demonstrates the migration of an **on-premises web application** an
    - 📄 **[High-Level TCO Analysis](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/A-Phase%201-AWS%20Application%20Discovery%20%26%20TCO%20Analysis/2.HighLevel-TCO-Analysis.md)** 
    - 📄 **[Complete AWS Migration Documentation](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)** 
 
-  
+🔹 **[Phase 2: AWS Database Migration](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/migration/B-Phase%202-AWS%20Database-migration)**
+
+   - 🎥[Watch on YouTube](https://youtu.be/RsjnwFSk6LU)
+
+   - 📄 **[Pre-Requisite](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/B-Phase%202-AWS%20Database-migration/0.Pre-requisite.md)**
+   - 📄 **[Database Migration](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/B-Phase%202-AWS%20Database-migration/1.Database-migration.md)**
+   - 📄 **[Troubleshooting](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/B-Phase%202-AWS%20Database-migration/3.Troubleshooting.md)** 
+   - 📄 **[Complete AWS Migration Documentation](https://github.com/prafulpatel16/mgn-aws-project01/tree/master/docs)**   
+
+
+
 ## 🏗️ Project Architecture
 
 ### 🔹 **On-Premises Setup**
