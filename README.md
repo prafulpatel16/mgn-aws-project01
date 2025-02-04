@@ -27,7 +27,7 @@ This project demonstrates the migration of an **on-premises web application** an
 ## Architecture
 ![alt text](<diagrams/AWS DMS Migration2- Thumbnail 1200 X 644.gif>)
 
-   - 🎥[Watch on YouTube](https://youtu.be/RsjnwFSk6LU)
+   - 🎥[Watch on YouTube](https://youtu.be/gNrtXMhyP5c)
 
    - 📄 **[Pre-Requisite](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/B-Phase%202-AWS%20Database-migration/0.Pre-requisite.md)**
    - 📄 **[Database Migration](https://github.com/prafulpatel16/mgn-aws-project01/blob/master/migration/B-Phase%202-AWS%20Database-migration/1.Database-migration.md)**
